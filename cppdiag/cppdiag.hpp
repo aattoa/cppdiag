@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <cassert>
-#include <utility>
 #include <compare>
 
 #include <vector>
@@ -46,7 +44,11 @@ namespace cppdiag {
         std::optional<Color>          note_color;
     };
 
-    enum class Level { error, warning, note };
+    enum class Level {
+        error,
+        warning,
+        note,
+    };
 
     struct Diagnostic {
         std::vector<Text_section>     text_sections;
@@ -70,14 +72,8 @@ namespace cppdiag {
         template <class... Args>
         auto format_message(std::format_string<Args...> const fmt, Args&&... args) -> Message_string
         {
-            return vformat_message(fmt.get(), std::make_format_args(std::forward<Args>(args)...));
+            return vformat_message(fmt.get(), std::make_format_args(args...));
         }
     };
 
 } // namespace cppdiag
-
-namespace cppdiag::internal {
-    auto get_relevant_lines(
-        std::string_view source_string, Position section_start, Position section_stop)
-        -> std::vector<std::string_view>;
-}
