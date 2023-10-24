@@ -68,6 +68,8 @@ namespace cppdiag {
         // Format `diagnostic` to a new string according to `colors`.
         auto format_diagnostic(Diagnostic const& diagnostic, Colors colors = {}) -> std::string;
 
+        auto message(std::string_view) -> Message_string;
+
         auto vformat_message(std::string_view, std::format_args) -> Message_string;
 
         template <class... Args>

@@ -24,7 +24,7 @@ namespace {
 
         auto line_number = section.start_position.line;
 
-        // Write the diagnostic header and the message
+        // Write position details
         std::format_to(
             std::back_inserter(output),
             "{}{:{}} --> {}:{}-{}{}\n",
@@ -78,6 +78,7 @@ auto cppdiag::Context::format_diagnostic(
 {
     auto const original_output_size = output.size();
     try {
+        // Write the diagnostic header and the message
         std::format_to(
             std::back_inserter(output),
             "{}{}:{} {}",
@@ -99,6 +100,11 @@ auto cppdiag::Context::format_diagnostic(
         output.resize(original_output_size);
         throw;
     }
+}
+
+auto cppdiag::Context::message(std::string_view const string) -> Message_string
+{
+    return format_message("{}", string);
 }
 
 auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors const colors)
