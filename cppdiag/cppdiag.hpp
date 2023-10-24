@@ -38,6 +38,7 @@ namespace cppdiag {
 
     struct Text_section {
         std::string_view              source_string;
+        std::string_view              source_name;
         Position                      start_position;
         Position                      stop_position;
         std::optional<Message_string> note;
