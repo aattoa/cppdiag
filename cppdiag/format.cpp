@@ -95,16 +95,12 @@ auto cppdiag::Context::format_diagnostic(
             output.append("\n\n").append(
                 internal::view_in(diagnostic.help_note.value(), m_message_buffer));
         }
+        output.push_back('\n');
     }
     catch (...) {
         output.resize(original_output_size);
         throw;
     }
-}
-
-auto cppdiag::Context::message(std::string_view const string) -> Message_string
-{
-    return format_message("{}", string);
 }
 
 auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors const colors)
@@ -114,12 +110,4 @@ auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors co
     output.reserve(64);
     format_diagnostic(diagnostic, output, colors);
     return output;
-}
-
-auto cppdiag::Context::vformat_message(std::string_view const fmt, std::format_args const args)
-    -> Message_string
-{
-    std::size_t const offset = m_message_buffer.size();
-    std::vformat_to(std::back_inserter(m_message_buffer), fmt, args);
-    return Message_string { .offset = offset, .length = m_message_buffer.size() - offset };
 }

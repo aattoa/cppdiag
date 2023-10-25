@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/cppdiag.cpp
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/cppdiag.hpp
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/format.cpp
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/internals.cpp
@@ -21,7 +22,7 @@ else ()
 endif ()
 
 option(CPPDIAG_BUILD_TESTS "Build cppdiag tests" OFF)
-if(${CPPDIAG_BUILD_TESTS})
+if (${CPPDIAG_BUILD_TESTS})
     enable_testing()
     add_subdirectory(tests)
-endif()
+endif ()

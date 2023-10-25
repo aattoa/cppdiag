@@ -24,7 +24,7 @@ TEST("format diagnostic without text sections")
     };
     REQUIRE(
         context.format_diagnostic(diagnostic, mock_colors)
-        == "[warn]Warning:[norm] qwe123rty\n\nhello");
+        == "[warn]Warning:[norm] qwe123rty\n\nhello\n");
 }
 
 TEST("format diagnostic with a one-line text section")
@@ -49,7 +49,7 @@ TEST("format diagnostic with a one-line text section")
            "[info]  --> mock source:1:5-1:7[norm]\n\n"
            "[info] 1 |[norm] abc def ghi\n"
            "         [erro]^^^ Here[norm]\n\n"
-           "helpful note");
+           "helpful note\n");
 }
 
 TEST("format diagnostic with multiple one-line text sections")
@@ -87,5 +87,5 @@ TEST("format diagnostic with multiple one-line text sections")
            "[info]  --> mock source:1:1-1:3[norm]\n\n"
            "[info] 1 |[norm] abc def ghi\n"
            "     [warn]^^^ asdf[norm]\n\n"
-           "helpful note");
+           "helpful note\n");
 }
