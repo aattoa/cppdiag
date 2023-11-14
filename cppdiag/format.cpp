@@ -74,7 +74,7 @@ namespace {
 } // namespace
 
 auto cppdiag::Context::format_diagnostic(
-    Diagnostic const& diagnostic, std::string& output, Colors const colors) -> void
+    Diagnostic const& diagnostic, std::string& output, Colors const colors) const -> void
 {
     auto const original_output_size = output.size();
     try {
@@ -103,7 +103,7 @@ auto cppdiag::Context::format_diagnostic(
     }
 }
 
-auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors const colors)
+auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors const colors) const
     -> std::string
 {
     std::string output;

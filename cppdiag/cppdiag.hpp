@@ -65,12 +65,13 @@ namespace cppdiag {
     public:
         // Format `diagnostic` to `output` according to `colors`.
         auto format_diagnostic(
-            Diagnostic const& diagnostic, std::string& output, Colors colors = Colors::defaults())
-            -> void;
+            Diagnostic const& diagnostic,
+            std::string&      output,
+            Colors            colors = Colors::defaults()) const -> void;
 
         // Format `diagnostic` to a new string according to `colors`.
-        auto format_diagnostic(Diagnostic const& diagnostic, Colors colors = Colors::defaults())
-            -> std::string;
+        auto format_diagnostic(
+            Diagnostic const& diagnostic, Colors colors = Colors::defaults()) const -> std::string;
 
         auto message(std::string_view) -> Message_string;
 
