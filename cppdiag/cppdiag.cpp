@@ -3,11 +3,12 @@
 auto cppdiag::Colors::defaults() noexcept -> Colors
 {
     return Colors {
-        .normal        = Color { .code = "\033[0m" },
-        .error         = Color { .code = "\033[91m" },
-        .warning       = Color { .code = "\033[33m" },
-        .note          = Color { .code = "\033[96m" },
-        .position_info = Color { .code = "\033[36m" },
+        .normal      = Color { .code = "\033[0m" },
+        .error       = Color { .code = "\033[31m" },
+        .warning     = Color { .code = "\033[33m" },
+        .hint        = Color { .code = "\033[32m" },
+        .information = Color { .code = "\033[34m" },
+        .position    = Color { .code = "\033[36m" },
     };
 }
 

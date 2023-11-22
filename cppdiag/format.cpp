@@ -4,22 +4,22 @@
 #include <ranges>
 
 namespace {
+    using namespace cppdiag::internal;
+
     auto format_section(
         cppdiag::Text_section const& section,
-        cppdiag::Level const         level,
+        cppdiag::Severity const      severity,
         cppdiag::Colors const        colors,
         std::string&                 output,
         std::string_view const       message_buffer) -> void
     {
         cppdiag::Color const note_color
-            = section.note_color.value_or(cppdiag::internal::level_color(level, colors));
+            = severity_color(section.note_severity.value_or(severity), colors);
 
-        std::size_t const line_info_width
-            = cppdiag::internal::digit_count(section.stop_position.line);
+        std::size_t const line_info_width = digit_count(section.stop_position.line);
 
-        auto const lines
-            = cppdiag::internal::strip_surrounding_whitespace(cppdiag::internal::relevant_lines(
-                section.source_string, section.start_position, section.stop_position));
+        auto const lines = strip_surrounding_whitespace(
+            relevant_lines(section.source_string, section.start_position, section.stop_position));
         ALWAYS_ASSERT(!lines.empty());
 
         auto line_number = section.start_position.line;
@@ -28,7 +28,7 @@ namespace {
         std::format_to(
             std::back_inserter(output),
             "{}{:{}} --> {}:{}-{}{}\n",
-            colors.position_info.code,
+            colors.position.code,
             "",
             line_info_width,
             section.source_name,
@@ -41,7 +41,7 @@ namespace {
             std::format_to(
                 std::back_inserter(output),
                 "\n{} {:<{}} |{} {}",
-                colors.position_info.code,
+                colors.position.code,
                 line_number++,
                 line_info_width,
                 colors.normal.code,
@@ -65,9 +65,7 @@ namespace {
             std::format_to(
                 std::back_inserter(output),
                 " {}{}",
-                section.note.has_value()
-                    ? cppdiag::internal::view_in(section.note.value(), message_buffer)
-                    : "Here",
+                section.note.has_value() ? view_in(section.note.value(), message_buffer) : "Here",
                 colors.normal.code);
         }
     }
@@ -82,18 +80,17 @@ auto cppdiag::Context::format_diagnostic(
         std::format_to(
             std::back_inserter(output),
             "{}{}:{} {}",
-            internal::level_color(diagnostic.level, colors).code,
-            internal::level_string(diagnostic.level),
+            severity_color(diagnostic.severity, colors).code,
+            severity_string(diagnostic.severity),
             colors.normal.code,
-            internal::view_in(diagnostic.message, m_message_buffer));
+            view_in(diagnostic.message, m_message_buffer));
 
         for (Text_section const& section : diagnostic.text_sections) {
             output.append("\n\n");
-            format_section(section, diagnostic.level, colors, output, m_message_buffer);
+            format_section(section, diagnostic.severity, colors, output, m_message_buffer);
         }
         if (diagnostic.help_note.has_value()) {
-            output.append("\n\n").append(
-                internal::view_in(diagnostic.help_note.value(), m_message_buffer));
+            output.append("\n\n").append(view_in(diagnostic.help_note.value(), m_message_buffer));
         }
         output.push_back('\n');
     }

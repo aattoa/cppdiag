@@ -28,9 +28,9 @@ namespace cppdiag::internal {
 
     auto is_valid_position(Position) -> bool;
 
-    auto level_string(Level) -> std::string_view;
+    auto severity_string(Severity) -> std::string_view;
 
-    auto level_color(Level, Colors) -> Color;
+    auto severity_color(Severity, Colors) -> Color;
 
     auto find_nth_newline(std::string_view::iterator, std::string_view::iterator, std::size_t)
         -> std::string_view::iterator;

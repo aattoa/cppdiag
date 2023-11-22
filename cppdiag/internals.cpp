@@ -44,29 +44,33 @@ auto cppdiag::internal::is_valid_position(Position const position) -> bool
     return position.line != 0 && position.column != 0;
 }
 
-auto cppdiag::internal::level_color(Level const level, Colors const colors) -> Color
+auto cppdiag::internal::severity_color(Severity const severity, Colors const colors) -> Color
 {
-    switch (level) {
-    case cppdiag::Level::error:
+    switch (severity) {
+    case cppdiag::Severity::error:
         return colors.error;
-    case cppdiag::Level::warning:
+    case cppdiag::Severity::warning:
         return colors.warning;
-    case cppdiag::Level::note:
-        return colors.note;
+    case cppdiag::Severity::hint:
+        return colors.hint;
+    case cppdiag::Severity::information:
+        return colors.information;
     default:
         ALWAYS_ASSERT(false);
     }
 }
 
-auto cppdiag::internal::level_string(Level const level) -> std::string_view
+auto cppdiag::internal::severity_string(Severity const severity) -> std::string_view
 {
-    switch (level) {
-    case Level::error:
+    switch (severity) {
+    case Severity::error:
         return "Error";
-    case Level::warning:
+    case Severity::warning:
         return "Warning";
-    case Level::note:
-        return "Note";
+    case cppdiag::Severity::hint:
+        return "Hint";
+    case cppdiag::Severity::information:
+        return "Information";
     default:
         ALWAYS_ASSERT(false);
     }

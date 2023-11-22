@@ -25,8 +25,9 @@ namespace cppdiag {
         Color normal {};
         Color error {};
         Color warning {};
-        Color note {};
-        Color position_info {};
+        Color hint {};
+        Color information {};
+        Color position {};
 
         static auto defaults() noexcept -> Colors;
     };
@@ -38,10 +39,11 @@ namespace cppdiag {
         auto operator<=>(Position const&) const = default;
     };
 
-    enum class Level {
+    enum class Severity {
         error,
         warning,
-        note,
+        hint,
+        information,
     };
 
     struct Text_section {
@@ -50,14 +52,14 @@ namespace cppdiag {
         Position                      start_position;
         Position                      stop_position;
         std::optional<Message_string> note;
-        std::optional<Color>          note_color;
+        std::optional<Severity>       note_severity;
     };
 
     struct Diagnostic {
         std::vector<Text_section>     text_sections;
         Message_string                message;
         std::optional<Message_string> help_note;
-        Level                         level {};
+        Severity                      severity {};
     };
 
     class Context {
