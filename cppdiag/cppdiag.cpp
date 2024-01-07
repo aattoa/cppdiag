@@ -12,15 +12,12 @@ auto cppdiag::Colors::defaults() noexcept -> Colors
     };
 }
 
-auto cppdiag::Context::message(std::string_view const string) -> Message_string
+auto cppdiag::vformat_message(
+    cppdiag::Message_buffer& message_buffer,
+    std::string_view const   fmt,
+    std::format_args const   args) -> Message_string
 {
-    return format_message("{}", string);
-}
-
-auto cppdiag::Context::vformat_message(std::string_view const fmt, std::format_args const args)
-    -> Message_string
-{
-    std::size_t const offset = m_message_buffer.size();
-    std::vformat_to(std::back_inserter(m_message_buffer), fmt, args);
-    return Message_string { .offset = offset, .length = m_message_buffer.size() - offset };
+    std::size_t const offset = message_buffer.string.size();
+    std::vformat_to(std::back_inserter(message_buffer.string), fmt, args);
+    return Message_string { .offset = offset, .length = message_buffer.string.size() - offset };
 }

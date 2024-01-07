@@ -62,28 +62,32 @@ namespace cppdiag {
         Severity                      severity {};
     };
 
-    class Context {
-        std::string m_message_buffer;
-    public:
-        // Format `diagnostic` to `output` according to `colors`.
-        auto format_diagnostic(
-            Diagnostic const& diagnostic,
-            std::string&      output,
-            Colors            colors = Colors::defaults()) const -> void;
-
-        // Format `diagnostic` to a new string according to `colors`.
-        auto format_diagnostic(
-            Diagnostic const& diagnostic, Colors colors = Colors::defaults()) const -> std::string;
-
-        auto message(std::string_view) -> Message_string;
-
-        auto vformat_message(std::string_view, std::format_args) -> Message_string;
-
-        template <class... Args>
-        auto format_message(std::format_string<Args...> const fmt, Args&&... args) -> Message_string
-        {
-            return vformat_message(fmt.get(), std::make_format_args(args...));
-        }
+    struct Message_buffer {
+        std::string string;
     };
+
+    // Format `diagnostic` to `output` according to `colors`.
+    auto format_diagnostic(
+        Diagnostic const&     diagnostic,
+        Message_buffer const& message_buffer,
+        std::string&          output,
+        Colors                colors = Colors::defaults()) -> void;
+
+    // Format `diagnostic` to a new string according to `colors`.
+    auto format_diagnostic(
+        Diagnostic const&     diagnostic,
+        Message_buffer const& message_buffer,
+        Colors                colors = Colors::defaults()) -> std::string;
+
+    auto vformat_message(Message_buffer&, std::string_view, std::format_args) -> Message_string;
+
+    template <class... Args>
+    auto format_message(
+        Message_buffer&                   buffer,
+        std::format_string<Args...> const fmt,
+        Args&&... args) -> Message_string
+    {
+        return vformat_message(buffer, fmt.get(), std::make_format_args(args...));
+    }
 
 } // namespace cppdiag

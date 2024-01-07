@@ -13,10 +13,10 @@ auto cppdiag::internal::digit_count(std::size_t integer) -> std::size_t
     return digits;
 }
 
-auto cppdiag::internal::view_in(Message_string const message, std::string_view const buffer)
+auto cppdiag::internal::view_in(Message_string const message, Message_buffer const& buffer)
     -> std::string_view
 {
-    return buffer.substr(message.offset, message.length);
+    return std::string_view(buffer.string).substr(message.offset, message.length);
 }
 
 auto cppdiag::internal::find_nth_newline(
@@ -77,8 +77,9 @@ auto cppdiag::internal::severity_string(Severity const severity) -> std::string_
 }
 
 auto cppdiag::internal::relevant_lines(
-    std::string_view const source_string, Position const section_start, Position const section_stop)
-    -> std::vector<std::string_view>
+    std::string_view const source_string,
+    Position const         section_start,
+    Position const         section_stop) -> std::vector<std::string_view>
 {
     ALWAYS_ASSERT(!source_string.empty());
     ALWAYS_ASSERT(is_valid_position(section_start));

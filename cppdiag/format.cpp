@@ -58,11 +58,11 @@ namespace {
     }
 
     auto write_horizontal_highlight(
-        Out const                    out,
-        cppdiag::Text_section const& section,
-        cppdiag::Color const         note_color,
-        std::string_view const       message_buffer,
-        cppdiag::Colors const        colors) -> void
+        Out const                      out,
+        cppdiag::Text_section const&   section,
+        cppdiag::Color const           note_color,
+        cppdiag::Message_buffer const& message_buffer,
+        cppdiag::Colors const          colors) -> void
     {
         std::format_to(
             out,
@@ -75,11 +75,11 @@ namespace {
     }
 
     auto write_section(
-        Out const                    out,
-        cppdiag::Text_section const& section,
-        cppdiag::Severity const      severity,
-        cppdiag::Colors const        colors,
-        std::string_view const       message_buffer) -> void
+        Out const                      out,
+        cppdiag::Text_section const&   section,
+        cppdiag::Severity const        severity,
+        cppdiag::Colors const          colors,
+        cppdiag::Message_buffer const& message_buffer) -> void
     {
         auto const line_info_width = digit_count(section.stop_position.line);
 
@@ -107,23 +107,26 @@ namespace {
     }
 } // namespace
 
-auto cppdiag::Context::format_diagnostic(
-    Diagnostic const& diagnostic, std::string& output, Colors const colors) const -> void
+auto cppdiag::format_diagnostic(
+    Diagnostic const&     diagnostic,
+    Message_buffer const& message_buffer,
+    std::string&          output,
+    Colors const          colors) -> void
 {
     auto const original_output_size = output.size();
     try {
         write_diagnostic_message(
             std::back_inserter(output),
             diagnostic.severity,
-            view_in(diagnostic.message, m_message_buffer),
+            view_in(diagnostic.message, message_buffer),
             colors);
         for (Text_section const& section : diagnostic.text_sections) {
             output.append("\n\n");
             write_section(
-                std::back_inserter(output), section, diagnostic.severity, colors, m_message_buffer);
+                std::back_inserter(output), section, diagnostic.severity, colors, message_buffer);
         }
         if (diagnostic.help_note.has_value()) {
-            output.append("\n\n").append(view_in(diagnostic.help_note.value(), m_message_buffer));
+            output.append("\n\n").append(view_in(diagnostic.help_note.value(), message_buffer));
         }
         output.push_back('\n');
     }
@@ -133,11 +136,13 @@ auto cppdiag::Context::format_diagnostic(
     }
 }
 
-auto cppdiag::Context::format_diagnostic(Diagnostic const& diagnostic, Colors const colors) const
-    -> std::string
+auto cppdiag::format_diagnostic(
+    Diagnostic const&     diagnostic,
+    Message_buffer const& message_buffer,
+    Colors const          colors) -> std::string
 {
     std::string output;
     output.reserve(64);
-    format_diagnostic(diagnostic, output, colors);
+    format_diagnostic(diagnostic, message_buffer, output, colors);
     return output;
 }

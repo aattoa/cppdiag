@@ -24,7 +24,7 @@ namespace cppdiag::internal {
 
     auto whitespace_suffix_length(std::string_view) -> std::size_t;
 
-    auto view_in(Message_string, std::string_view) -> std::string_view;
+    auto view_in(Message_string, Message_buffer const&) -> std::string_view;
 
     auto is_valid_position(Position) -> bool;
 
