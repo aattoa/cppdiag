@@ -41,7 +41,29 @@ namespace cppdiag::internal {
     auto strip_surrounding_whitespace(std::vector<std::string_view>)
         -> std::vector<std::string_view>;
 
+    struct Padding {
+        char        fill {};
+        std::size_t width {};
+    };
+
 } // namespace cppdiag::internal
+
+template <>
+struct std::formatter<cppdiag::internal::Padding> {
+    constexpr auto parse(auto& context)
+    {
+        return context.begin();
+    }
+
+    constexpr auto format(cppdiag::internal::Padding const padding, auto& context) const
+    {
+        auto out = context.out();
+        for (std::size_t i = 0; i != padding.width; ++i) {
+            *out++ = padding.fill;
+        }
+        return out;
+    }
+};
 
 template <>
 struct std::formatter<cppdiag::Position> {
@@ -50,7 +72,7 @@ struct std::formatter<cppdiag::Position> {
         return context.begin();
     }
 
-    auto format(cppdiag::Position const position, auto& context) const
+    constexpr auto format(cppdiag::Position const position, auto& context) const
     {
         return std::format_to(context.out(), "{}:{}", position.line, position.column);
     }

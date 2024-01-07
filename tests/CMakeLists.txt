@@ -1,4 +1,11 @@
-find_package(Catch2 3 REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        766541d12d64845f5232a1ce4e34a85e83506b09)
+FetchContent_MakeAvailable(Catch2)
+include(CTest)
+include(Catch)
 
 add_executable(test-${PROJECT_NAME} internals.cpp interface.cpp)
 target_include_directories(test-${PROJECT_NAME}
