@@ -1,20 +1,12 @@
 #pragma once
 
 #include <cppdiag.hpp>
+#include <cpputil/util.hpp>
 
 #include <vector>
 #include <cstdint>
 #include <cassert>
 #include <string_view>
-
-#ifdef NDEBUG
-#define ALWAYS_ASSERT(...)                \
-    do {                                  \
-        if (!(__VA_ARGS__)) std::abort(); \
-    } while (false)
-#else
-#define ALWAYS_ASSERT(...) assert((__VA_ARGS__))
-#endif
 
 namespace cppdiag::internal {
 
@@ -29,8 +21,6 @@ namespace cppdiag::internal {
     auto is_valid_position(Position) -> bool;
 
     auto severity_string(Severity) -> std::string_view;
-
-    auto severity_color(Severity, Colors) -> Color;
 
     auto find_nth_newline(std::string_view::iterator, std::string_view::iterator, std::size_t)
         -> std::string_view::iterator;

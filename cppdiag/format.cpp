@@ -1,3 +1,4 @@
+#include "cpputil/util.hpp"
 #include <internals.hpp>
 #include <cppdiag.hpp>
 #include <algorithm>
@@ -7,21 +8,6 @@ namespace {
     using namespace cppdiag::internal;
 
     using Out = std::back_insert_iterator<std::string>;
-
-    auto write_diagnostic_message(
-        Out const               out,
-        cppdiag::Severity const severity,
-        std::string_view const  message,
-        cppdiag::Colors const   colors) -> void
-    {
-        std::format_to(
-            out,
-            "{}{}:{} {}",
-            severity_color(severity, colors).code,
-            severity_string(severity),
-            colors.normal.code,
-            message);
-    }
 
     auto write_position_information(
         Out const                    out,
@@ -85,12 +71,11 @@ namespace {
 
         auto const lines = strip_surrounding_whitespace(
             relevant_lines(section.source_string, section.start_position, section.stop_position));
-        ALWAYS_ASSERT(!lines.empty());
+        cpputil::always_assert(!lines.empty());
 
         write_position_information(out, section, line_info_width, colors);
 
-        cppdiag::Color const note_color
-            = severity_color(section.note_severity.value_or(severity), colors);
+        auto const note_color = colors.for_severity(section.note_severity.value_or(severity));
 
         if (lines.size() == 1) {
             write_numbered_line(
@@ -115,11 +100,12 @@ auto cppdiag::format_diagnostic(
 {
     auto const original_output_size = output.size();
     try {
-        write_diagnostic_message(
+        std::format_to(
             std::back_inserter(output),
-            diagnostic.severity,
-            view_in(diagnostic.message, message_buffer),
-            colors);
+            "{}{}",
+            Severity_header::make(diagnostic.severity, colors),
+            view_in(diagnostic.message, message_buffer));
+
         for (Text_section const& section : diagnostic.text_sections) {
             output.append("\n\n");
             write_section(

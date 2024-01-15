@@ -44,22 +44,6 @@ auto cppdiag::internal::is_valid_position(Position const position) -> bool
     return position.line != 0 && position.column != 0;
 }
 
-auto cppdiag::internal::severity_color(Severity const severity, Colors const colors) -> Color
-{
-    switch (severity) {
-    case cppdiag::Severity::error:
-        return colors.error;
-    case cppdiag::Severity::warning:
-        return colors.warning;
-    case cppdiag::Severity::hint:
-        return colors.hint;
-    case cppdiag::Severity::information:
-        return colors.information;
-    default:
-        ALWAYS_ASSERT(false);
-    }
-}
-
 auto cppdiag::internal::severity_string(Severity const severity) -> std::string_view
 {
     switch (severity) {
@@ -72,7 +56,7 @@ auto cppdiag::internal::severity_string(Severity const severity) -> std::string_
     case cppdiag::Severity::information:
         return "Information";
     default:
-        ALWAYS_ASSERT(false);
+        cpputil::unreachable();
     }
 }
 
@@ -81,10 +65,10 @@ auto cppdiag::internal::relevant_lines(
     Position const         section_start,
     Position const         section_stop) -> std::vector<std::string_view>
 {
-    ALWAYS_ASSERT(!source_string.empty());
-    ALWAYS_ASSERT(is_valid_position(section_start));
-    ALWAYS_ASSERT(is_valid_position(section_stop));
-    ALWAYS_ASSERT(section_start <= section_stop);
+    cpputil::always_assert(!source_string.empty());
+    cpputil::always_assert(is_valid_position(section_start));
+    cpputil::always_assert(is_valid_position(section_stop));
+    cpputil::always_assert(section_start <= section_stop);
 
     auto       source_it  = source_string.begin();
     auto const source_end = source_string.end();
@@ -92,7 +76,7 @@ auto cppdiag::internal::relevant_lines(
     if (section_start.line != 1) {
         source_it = find_nth_newline(source_it, source_end, section_start.line - 2);
         // If a newline isn't found, the position was set incorrectly.
-        ALWAYS_ASSERT(source_it != source_end);
+        cpputil::always_assert(source_it != source_end);
         // Set the source iterator to the first character of the first relevant line.
         ++source_it;
     }
@@ -103,7 +87,7 @@ auto cppdiag::internal::relevant_lines(
     for (std::size_t line = section_start.line; line != section_stop.line; ++line) {
         auto const newline_it = std::find(source_it, source_end, '\n');
         // As the last relevant line is yet to be reached, a newline must be found.
-        ALWAYS_ASSERT(newline_it != source_end);
+        cpputil::always_assert(newline_it != source_end);
         lines.emplace_back(source_it, newline_it);
         // Set the source iterator to the first character of the next relevant line.
         source_it = newline_it + 1;

@@ -1,42 +1,31 @@
 #pragma once
 
 #include <cstdint>
-#include <compare>
-
-#include <vector>
-#include <optional>
-
 #include <format>
+#include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace cppdiag {
 
+    // Store diagnostic messages in one unified buffer.
+    struct Message_buffer {
+        std::string string;
+    };
+
+    // A relative view of a `Message_buffer`.
     struct Message_string {
         std::size_t offset {};
         std::size_t length {};
     };
 
-    struct Color {
-        std::string_view code;
-    };
-
-    struct Colors {
-        Color normal {};
-        Color error {};
-        Color warning {};
-        Color hint {};
-        Color information {};
-        Color position {};
-
-        static auto defaults() noexcept -> Colors;
-    };
-
+    // The position of a character in a text file or other diagnostic source string.
     struct Position {
-        std::size_t line   = 1;
-        std::size_t column = 1;
+        std::uint32_t line   = 1;
+        std::uint32_t column = 1;
 
-        auto operator<=>(Position const&) const = default;
+        auto operator<=>(Position const&) const -> std::strong_ordering = default;
     };
 
     enum class Severity {
@@ -44,6 +33,36 @@ namespace cppdiag {
         warning,
         hint,
         information,
+    };
+
+    struct Color {
+        std::string_view code;
+    };
+
+    struct Colors {
+        Color normal;
+        Color error;
+        Color warning;
+        Color hint;
+        Color information;
+        Color position;
+
+        // Select the data member corresponding to the given severity.
+        auto for_severity(Severity) const noexcept -> Color;
+
+        // Returns a `Colors` object with sensible default values.
+        static auto defaults() noexcept -> Colors;
+
+        // Returns a default constructed `Colors` object.
+        static auto none() noexcept -> Colors;
+    };
+
+    struct Severity_header {
+        Color            severity_color;
+        Color            restore_color;
+        std::string_view severity_string;
+
+        static auto make(Severity, Colors const&) noexcept -> Severity_header;
     };
 
     struct Text_section {
@@ -60,10 +79,6 @@ namespace cppdiag {
         Message_string                message;
         std::optional<Message_string> help_note;
         Severity                      severity {};
-    };
-
-    struct Message_buffer {
-        std::string string;
     };
 
     // Format `diagnostic` to `output` according to `colors`.
@@ -91,3 +106,23 @@ namespace cppdiag {
     }
 
 } // namespace cppdiag
+
+template <class Char>
+struct std::formatter<cppdiag::Severity_header, Char> {
+    constexpr auto parse(auto& context) const
+    {
+        return context.begin();
+    }
+
+    constexpr auto format(cppdiag::Severity_header const header, auto& context) const
+    {
+        return std::format_to(
+            context.out(),
+            "{}{}:{} ",
+            header.severity_color.code,
+            header.severity_string,
+            header.restore_color.code);
+    }
+};
+
+// static_assert(std::formattable<cppdiag::Severity_header, char>);
