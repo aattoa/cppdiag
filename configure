@@ -1,3 +1,5 @@
+#!/bin/sh
+
 cmake -S . -B out/debug -G Ninja \
     -DCPPDIAG_BUILD_TESTS=ON     \
     -DCMAKE_BUILD_TYPE=Debug     \

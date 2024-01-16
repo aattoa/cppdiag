@@ -1,7 +1,7 @@
 #include <cppdiag.hpp>
-#include <catch2/catch_test_macros.hpp>
+#include <cppunittest/unittest.hpp>
 
-#define TEST(name) TEST_CASE("cppdiag interface " name, "[cppdiag]")
+#define TEST(name) UNITTEST("cppdiag interface: " name)
 
 namespace {
     constexpr cppdiag::Colors mock_colors {
@@ -23,9 +23,9 @@ TEST("format diagnostic without text sections")
         .help_note     = cppdiag::format_message(message_buffer, "hello"),
         .severity      = cppdiag::Severity::warning,
     };
-    REQUIRE(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors)
-        == "[wrn]Warning:[nrm] qwe123rty\n\nhello\n");
+    REQUIRE_EQUAL(
+        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        "[wrn]Warning:[nrm] qwe123rty\n\nhello\n");
 }
 
 TEST("format diagnostic with a one-line text section")
@@ -44,13 +44,13 @@ TEST("format diagnostic with a one-line text section")
         .help_note = cppdiag::format_message(message_buffer, "helpful note"),
         .severity  = cppdiag::Severity::error,
     };
-    REQUIRE(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors)
-        == "[err]Error:[nrm] interesting message\n\n"
-           "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
-           "[pos] 1 |[nrm] abc def ghi\n"
-           "         [err]^^^ Here[nrm]\n\n"
-           "helpful note\n");
+    REQUIRE_EQUAL(
+        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        "[err]Error:[nrm] interesting message\n\n"
+        "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
+        "[pos] 1 |[nrm] abc def ghi\n"
+        "         [err]^^^ Here[nrm]\n\n"
+        "helpful note\n");
 }
 
 TEST("format diagnostic with multiple one-line text sections")
@@ -79,14 +79,14 @@ TEST("format diagnostic with multiple one-line text sections")
         .help_note = cppdiag::format_message(message_buffer, "helpful note"),
         .severity  = cppdiag::Severity::error,
     };
-    REQUIRE(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors)
-        == "[err]Error:[nrm] interesting message\n\n"
-           "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
-           "[pos] 1 |[nrm] abc def ghi\n"
-           "         [err]^^^ qwerty[nrm]\n\n"
-           "[pos]  --> mock source:1:1-1:3[nrm]\n\n"
-           "[pos] 1 |[nrm] abc def ghi\n"
-           "     [wrn]^^^ asdf[nrm]\n\n"
-           "helpful note\n");
+    REQUIRE_EQUAL(
+        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        "[err]Error:[nrm] interesting message\n\n"
+        "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
+        "[pos] 1 |[nrm] abc def ghi\n"
+        "         [err]^^^ qwerty[nrm]\n\n"
+        "[pos]  --> mock source:1:1-1:3[nrm]\n\n"
+        "[pos] 1 |[nrm] abc def ghi\n"
+        "     [wrn]^^^ asdf[nrm]\n\n"
+        "helpful note\n");
 }
