@@ -1,5 +1,5 @@
 add_executable(test-cppdiag internals.cpp interface.cpp)
-target_link_libraries(test-cppdiag PRIVATE cppdiag PRIVATE cpputil)
+target_link_libraries(test-cppdiag PRIVATE cppdiag PRIVATE cpputil::util)
 
 if (MSVC)
     target_compile_options(test-cppdiag PRIVATE "/W4")

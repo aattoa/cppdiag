@@ -1,8 +1,6 @@
-#include "cpputil/util.hpp"
-#include <internals.hpp>
-#include <cppdiag.hpp>
-#include <algorithm>
-#include <ranges>
+#include <cpputil/util.hpp>
+#include <cppdiag/internals.hpp>
+#include <cppdiag/cppdiag.hpp>
 
 namespace {
     using namespace cppdiag::internal;
@@ -111,6 +109,7 @@ auto cppdiag::format_diagnostic(
             write_section(
                 std::back_inserter(output), section, diagnostic.severity, colors, message_buffer);
         }
+
         if (diagnostic.help_note.has_value()) {
             output.append("\n\n").append(view_in(diagnostic.help_note.value(), message_buffer));
         }

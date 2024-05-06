@@ -1,5 +1,5 @@
-#include <cppdiag.hpp>
-#include <internals.hpp>
+#include <cppdiag/cppdiag.hpp>
+#include <cppdiag/internals.hpp>
 #include <cppunittest/unittest.hpp>
 
 #define TEST(name) UNITTEST("cppdiag internal: " name)

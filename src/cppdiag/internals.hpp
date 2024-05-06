@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cppdiag.hpp>
+#include <cppdiag/cppdiag.hpp>
 #include <cpputil/util.hpp>
 
 #include <vector>
-#include <cstdint>
 #include <cassert>
 #include <string_view>
 

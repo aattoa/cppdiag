@@ -1,5 +1,5 @@
-#include <internals.hpp>
-#include <cppdiag.hpp>
+#include <cppdiag/internals.hpp>
+#include <cppdiag/cppdiag.hpp>
 
 auto cppdiag::Colors::for_severity(Severity const severity) const noexcept -> Color
 {

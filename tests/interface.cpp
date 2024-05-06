@@ -1,4 +1,4 @@
-#include <cppdiag.hpp>
+#include <cppdiag/cppdiag.hpp>
 #include <cppunittest/unittest.hpp>
 
 #define TEST(name) UNITTEST("cppdiag interface: " name)

@@ -1,4 +1,4 @@
-#include <internals.hpp>
+#include <cppdiag/internals.hpp>
 #include <functional>
 #include <algorithm>
 #include <ranges>
