@@ -8,14 +8,11 @@
 #include <string_view>
 
 namespace cppdiag::internal {
-
     auto digit_count(std::size_t) -> std::size_t;
 
     auto whitespace_prefix_length(std::string_view) -> std::size_t;
 
     auto whitespace_suffix_length(std::string_view) -> std::size_t;
-
-    auto view_in(Message_string, Message_buffer const&) -> std::string_view;
 
     auto is_valid_position(Position) -> bool;
 
@@ -34,17 +31,16 @@ namespace cppdiag::internal {
         char        fill {};
         std::size_t width {};
     };
-
 } // namespace cppdiag::internal
 
 template <>
 struct std::formatter<cppdiag::internal::Padding> {
-    constexpr auto parse(auto& context)
+    static constexpr auto parse(auto& context)
     {
         return context.begin();
     }
 
-    constexpr auto format(cppdiag::internal::Padding const padding, auto& context) const
+    static constexpr auto format(cppdiag::internal::Padding const padding, auto& context)
     {
         auto out = context.out();
         for (std::size_t i = 0; i != padding.width; ++i) {
@@ -56,12 +52,12 @@ struct std::formatter<cppdiag::internal::Padding> {
 
 template <>
 struct std::formatter<cppdiag::Position> {
-    constexpr auto parse(auto& context)
+    static constexpr auto parse(auto& context)
     {
         return context.begin();
     }
 
-    constexpr auto format(cppdiag::Position const position, auto& context) const
+    static constexpr auto format(cppdiag::Position const position, auto& context)
     {
         return std::format_to(context.out(), "{}:{}", position.line, position.column);
     }

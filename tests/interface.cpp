@@ -3,34 +3,30 @@
 
 #define TEST(name) UNITTEST("cppdiag interface: " name)
 
-namespace {
-    constexpr cppdiag::Colors mock_colors {
-        .normal      = { .code = "[nrm]" },
-        .error       = { .code = "[err]" },
-        .warning     = { .code = "[wrn]" },
-        .hint        = { .code = "[hnt]" },
-        .information = { .code = "[inf]" },
-        .position    = { .code = "[pos]" },
-    };
-}
+static constexpr cppdiag::Colors mock_colors {
+    .normal      = { "[nrm]" },
+    .error       = { "[err]" },
+    .warning     = { "[wrn]" },
+    .hint        = { "[hnt]" },
+    .information = { "[inf]" },
+    .position    = { "[pos]" },
+};
 
 TEST("format diagnostic without text sections")
 {
-    cppdiag::Message_buffer   message_buffer;
     cppdiag::Diagnostic const diagnostic {
         .text_sections = {},
-        .message       = cppdiag::format_message(message_buffer, "qwe{}rty", 123),
-        .help_note     = cppdiag::format_message(message_buffer, "hello"),
+        .message       = "qwe123rty",
+        .help_note     = "hello",
         .severity      = cppdiag::Severity::warning,
     };
     REQUIRE_EQUAL(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        cppdiag::format_diagnostic(diagnostic, mock_colors),
         "[wrn]Warning:[nrm] qwe123rty\n\nhello\n");
 }
 
 TEST("format diagnostic with a one-line text section")
 {
-    cppdiag::Message_buffer   message_buffer;
     cppdiag::Diagnostic const diagnostic {
         .text_sections { cppdiag::Text_section {
             .source_string  = "abc def ghi",
@@ -40,12 +36,12 @@ TEST("format diagnostic with a one-line text section")
             .note           = std::nullopt,
             .note_severity  = std::nullopt,
         } },
-        .message   = cppdiag::format_message(message_buffer, "interesting message"),
-        .help_note = cppdiag::format_message(message_buffer, "helpful note"),
+        .message   = "interesting message",
+        .help_note = "helpful note",
         .severity  = cppdiag::Severity::error,
     };
     REQUIRE_EQUAL(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        cppdiag::format_diagnostic(diagnostic, mock_colors),
         "[err]Error:[nrm] interesting message\n\n"
         "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
         "[pos] 1 |[nrm] abc def ghi\n"
@@ -55,7 +51,6 @@ TEST("format diagnostic with a one-line text section")
 
 TEST("format diagnostic with multiple one-line text sections")
 {
-    cppdiag::Message_buffer   message_buffer;
     cppdiag::Diagnostic const diagnostic {
         .text_sections {
             cppdiag::Text_section {
@@ -63,7 +58,7 @@ TEST("format diagnostic with multiple one-line text sections")
                 .source_name    = "mock source",
                 .start_position = { .line = 1, .column = 5 },
                 .stop_position  = { .line = 1, .column = 7 },
-                .note           = cppdiag::format_message(message_buffer, "qwerty"),
+                .note           = "qwerty",
                 .note_severity  = std::nullopt,
             },
             cppdiag::Text_section {
@@ -71,16 +66,16 @@ TEST("format diagnostic with multiple one-line text sections")
                 .source_name    = "mock source",
                 .start_position = { .line = 1, .column = 1 },
                 .stop_position  = { .line = 1, .column = 3 },
-                .note           = cppdiag::format_message(message_buffer, "asdf"),
+                .note           = "asdf",
                 .note_severity  = cppdiag::Severity::warning,
             },
         },
-        .message   = cppdiag::format_message(message_buffer, "interesting message"),
-        .help_note = cppdiag::format_message(message_buffer, "helpful note"),
+        .message   = "interesting message",
+        .help_note = "helpful note",
         .severity  = cppdiag::Severity::error,
     };
     REQUIRE_EQUAL(
-        cppdiag::format_diagnostic(diagnostic, message_buffer, mock_colors),
+        cppdiag::format_diagnostic(diagnostic, mock_colors),
         "[err]Error:[nrm] interesting message\n\n"
         "[pos]  --> mock source:1:5-1:7[nrm]\n\n"
         "[pos] 1 |[nrm] abc def ghi\n"

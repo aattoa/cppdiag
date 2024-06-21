@@ -13,12 +13,6 @@ auto cppdiag::internal::digit_count(std::size_t integer) -> std::size_t
     return digits;
 }
 
-auto cppdiag::internal::view_in(Message_string const message, Message_buffer const& buffer)
-    -> std::string_view
-{
-    return std::string_view(buffer.string).substr(message.offset, message.length);
-}
-
 auto cppdiag::internal::find_nth_newline(
     std::string_view::iterator const begin,
     std::string_view::iterator const end,
