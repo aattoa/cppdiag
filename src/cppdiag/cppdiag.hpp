@@ -50,7 +50,7 @@ namespace cppdiag {
     };
 
     struct Text_section {
-        std::string                source_string;
+        std::string_view           source_string;
         std::string                source_name;
         Position                   start_position;
         Position                   stop_position;
